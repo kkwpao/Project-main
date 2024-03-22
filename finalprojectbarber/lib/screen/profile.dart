@@ -20,39 +20,40 @@ class _UserProfileState extends State<UserProfile> {
   late String _pickedFile;
 
   Future<void> uploadImage(XFile imageFile) async {
-    try {
-      final userProvider = Provider.of<UserProvider>(context, listen: false);
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse('http://127.0.0.1/user/upload.php'),
-      );
+  try {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('http://127.0.0.1/Project-main/user/upload.php'),
+    );
 
-      // Add user_id to the request
-      request.fields['user_id'] = userProvider.getUserId();
+    // Add user_id to the request
+    request.fields['user_id'] = userProvider.getUserId();
 
-      // Convert the image file to bytes
-      List<int> imageBytes = await imageFile.readAsBytes();
+    // Convert the image file to bytes
+    List<int> imageBytes = await imageFile.readAsBytes();
 
-      // Create a MultipartFile from the image bytes
-      var multipartFile = http.MultipartFile.fromBytes(
-        'image',
-        imageBytes,
-        filename: 'workings.jpg',
-      );
+    // Create a MultipartFile from the image bytes
+    var multipartFile = http.MultipartFile.fromBytes(
+      'image',
+      imageBytes,
+      filename: 'workings.jpg',
+    );
 
-      // Add the MultipartFile to the request
-      request.files.add(multipartFile);
+    // Add the MultipartFile to the request
+    request.files.add(multipartFile);
 
-      var response = await request.send();
-      if (response.statusCode == 200) {
-        print('Image uploaded successfully');
-      } else {
-        print('Failed to upload image. Status code: ${response.statusCode}');
-      }
-    } catch (error) {
-      print('Error uploading image: $error');
-    } 
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      print('Image uploaded successfully');
+      _showUploadCompleteDialog(); // แสดง Popup เมื่ออัปโหลดเสร็จสิ้น
+    } else {
+      print('Failed to upload image. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Error uploading image: $error');
   }
+}
   
 
   @override
@@ -133,7 +134,25 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  
+ void _showUploadCompleteDialog() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('อัปโหลดรูปภาพเสร็จสิ้น'),
+        content: Text('รูปภาพถูกอัปโหลดเรียบร้อยแล้ว'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // ปิด AlertDialog
+            },
+            child: Text('ตกลง'),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -146,17 +165,15 @@ class _UserProfileState extends State<UserProfile> {
             const SizedBox(height: 40),
             CircleAvatar(
               radius: 58,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Colors.white70,
-                    ),
-                  ),
-                ],
+              backgroundColor: Color.fromARGB(255, 245, 123, 57), // สีพื้นหลังของวงกลม
+              child: ClipOval(
+                child: Icon(
+                  Icons.person,
+                  size: 100, // ขนาดไอคอน
+                  color: Colors.white, // สีไอคอน
+                ),
               ),
+            
             ),
 
             // ข้อมูล

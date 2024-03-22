@@ -2,6 +2,7 @@ import 'package:finalprojectbarber/homepage.dart';
 import 'package:finalprojectbarber/login.dart';
 import 'package:finalprojectbarber/screen/editprofile.dart';
 import 'package:finalprojectbarber/screen/profile.dart';
+import 'package:finalprojectbarber/screen/work.dart';
 import 'package:finalprojectbarber/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
           '/home': (context) => HomePage(),
           '/edit_profile': (context) => EditProfile(),
           '/profile': (context) => UserProfile(),
+          '/work': (context) => UserWork(),
         },
       ),
     );
